@@ -1,6 +1,8 @@
 import binwalk 
 from tkinter import *
 
+#test
+
 # Initial Setup
 window = Tk()
 window.title("BinwalkGUI")
