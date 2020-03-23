@@ -27,7 +27,7 @@ class MultiListbox(Frame):
 		Label(frame, borderwidth=1, relief=RAISED).pack(fill=X)
 		sb = Scrollbar(frame, orient=VERTICAL, command=self._scroll)
 		sb.pack(expand=YES, fill=Y)
-		self.lists[0]['yscrollcommand'] = sb.set
+		self.lists[1]['yscrollcommand'] = sb.set
 
 	def _select(self, y):
 		row = self.lists[0].nearest(y)
@@ -58,7 +58,7 @@ class MultiListbox(Frame):
 		result = []
 		for l in self.lists:
 			result.append(l.get(first, last))
-		if last: return apply(map, [None] + result)
+		if last: return map(None, *result)
 		return result
 
 	def index(self, index):
@@ -115,7 +115,7 @@ label_name_title.grid(column=0, row=0, sticky=W)
 label_name = Label(window, text="") # refers to bin file being used
 label_name.grid(sticky=W, column=1, row=0)
 
-lb = MultiListbox(window, (('Offset',20), ('Description', 100)))
+lb = MultiListbox(window, (('Offset',20), ('Description', 140)))
 lb.grid(columnspan=2, row=1)
 
 def browse_file():
@@ -131,6 +131,7 @@ subMenu.add_command(label="Open", command=browse_file)
 # Helper functions
 def analyze():
 
+	lb.delete(0,END)
 	if(filename_path == 'empty'):
 		print('error')
 	else:
@@ -141,9 +142,13 @@ def analyze():
 				lb.insert(END, ("0x%.8X" % result.offset, result.description))
 
 
-
+def test():
+	all_items = lb.get(0)
+	print(all_items)
 # Generating buttons
 execute_button = Button(window, text="Analyze File", command=analyze)
 execute_button.grid(column=1, row=5)
+test = Button(window, text='get select', command=test)
+test.grid(column=2, row=5)
 
 window.mainloop()
