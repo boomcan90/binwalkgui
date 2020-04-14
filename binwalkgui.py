@@ -1,5 +1,7 @@
 import binwalk 
 from tkinter import *
+from tkinter import filedialog
+from tkinter import messagebox
 
 # Initial Setup
 window = Tk()
@@ -23,19 +25,30 @@ label_results_data.grid(column=1, row=3)
 
 # Helper functions
 def analyze():
-	label_name.configure(text="firmware.zip")
+	# label_name.configure(text="firmware.zip")
+	if label_name.cget("text") is not "":
+		# binwalk execution
 
-	# binwalk execution
+		results_string = '' 
+		for module in binwalk.scan(label_name.cget("text"), signature=True, quiet=True):
+			for result in module.results: 
+				results_string += "0x%.8X    %s \n" % (result.offset, result.description)
 
-	results_string = '' 
-	for module in binwalk.scan("firmware.zip", signature=True, quiet=True):
-		for result in module.results: 
-			results_string += "0x%.8X    %s \n" % (result.offset, result.description)
+		label_results_data.configure(text=results_string)
+	else: 
+		messagebox.showerror("Error", "Please choose a file before analyzing")
 
-	label_results_data.configure(text=results_string)
+def choose_file(): 
+	label_results_data.configure(text='')
+	file_name = filedialog.askopenfilename()
+	label_name.configure(text=file_name)
+
 
 # Generating buttons
 execute_button = Button(window, text="Analyze File", command=analyze)
 execute_button.grid(column=1, row=5)
+
+choose_file_button = Button(window, text="Choose file to analyze", command=choose_file)
+choose_file_button.grid(column=2, row=0)
 
 window.mainloop()
