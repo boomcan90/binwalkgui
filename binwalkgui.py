@@ -7,6 +7,8 @@ from tkinter import messagebox
 window = Tk()
 window.title("BinwalkGUI")
 
+#testing
+
 # Generating labels
 label_name_title = Label(window, text="Filename:")
 label_name_title.grid(column=0, row=0)
