@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 import matplotlib
+import os
 
 # Initial Setup
 window = Tk()
@@ -29,18 +30,27 @@ label_results_data_offset.grid(sticky=W+E+N+S,column=1, row=3)
 label_results_data_description = Label(window, text="", anchor=W, justify=LEFT, font=("TkFixedFont"))
 label_results_data_description.grid(sticky=W+E+N+S,column=2, row=3)
 
+
+
 menubar = Menu(window)
 window.config(menu=menubar)
 subMenu = Menu(menubar, tearoff=0)
 subMenu2 = Menu(menubar, tearoff=0)
 
 filename_path = ""
+magic_path = ""
 
 def browse_file():
 	global filename_path
 	filename_path = filedialog.askopenfilename()
-	print(filename_path)
-	label_name.configure(text=filename_path)
+	#print(os.path.basename(filename_path))
+	label_name.configure(text=os.path.basename(filename_path))
+
+def choose_magic():
+	global magic_path
+	magic_path = filedialog.askopenfilename()
+	#print(os.path.basename(magic_path))
+	label_name.configure(text="%s (Magic file: %s)" % (os.path.basename(filename_path), os.path.basename(magic_path)))
 
 def show_entropy():
 	if filename_path is not "":
@@ -52,20 +62,43 @@ quiet_mode=BooleanVar()
 menubar.add_cascade(label="File", menu=subMenu)
 menubar.add_cascade(label="Expert", menu=subMenu2)
 subMenu.add_command(label="Open", command=browse_file)
-subMenu2.add_checkbutton(label="Quiet mode", onvalue=1, offvalue=0, variable=quiet_mode)
+subMenu2.add_checkbutton(label="Toggle quiet mode", onvalue=1, offvalue=0, variable=quiet_mode)
 subMenu2.add_command(label="Plot entropy", command=show_entropy)
-# Helper functions
+
+def magic():
+	# label_name.configure(text="firmware.zip")
+	if filename_path is not "":
+		# binwalk execution
+		#print(quiet_mode.get())
+		choose_magic()
+		if magic_path is "":
+			messagebox.showerror("Error", "No file selected")
+			return
+		results_string_offset = '' 
+		results_string_description = ''
+
+		for module in binwalk.scan(filename_path, signature=False, magic='magic.mgc',quiet=quiet_mode.get()):
+			for result in module.results: 
+				results_string_offset += "0x%.8X\n" % (result.offset)
+				results_string_description += "%s\n" % (result.description)
+		label_results_data_offset.configure(text=results_string_offset)
+		label_results_data_description.configure(text=results_string_description)
+	else: 
+		messagebox.showerror("Error", "Please choose a file before analyzing")
+
+subMenu2.add_command(label="Search with custom magic file only", command=magic)
 # Helper functions
 def analyze():
 	# label_name.configure(text="firmware.zip")
 	if filename_path is not "":
+		label_name.configure(text=os.path.basename(filename_path))
 		# binwalk execution
 		#print(quiet_mode.get())
 
 		results_string_offset = '' 
 		results_string_description = ''
 
-		for module in binwalk.scan(filename_path, signature=True, quiet=quiet_mode.get()):
+		for module in binwalk.scan(filename_path, signature=True ,quiet=quiet_mode.get()):
 			for result in module.results: 
 				results_string_offset += "0x%.8X\n" % (result.offset)
 				results_string_description += "%s\n" % (result.description)

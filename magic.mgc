@@ -1,0 +1,5 @@
+# custom signature for EGG text
+0    string    EGG    Special
+>2   byte      0x47   Format
+>7   byte      0x08   Found!
+#
