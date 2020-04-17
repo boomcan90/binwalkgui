@@ -53,8 +53,8 @@ python -m pip install -U matplotlib
 
 ## Using custom signatures
 
-First, select the file you wish to scan (use custom.zip for demo)
+First, select the file you wish to scan (use [custom.zip](custom.zip) for demo)
 
 Then from the 'Expert' option, select 'Search with custom magic file only'
 
-Select the file that contains your custom signatures (use magic.mgc for demo)
+Select the file that contains your custom signatures (use [magic.mgc](magic.mgc) for demo)
