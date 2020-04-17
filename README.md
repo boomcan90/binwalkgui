@@ -43,3 +43,10 @@ To instll tk, run the following commands:
 ```bash
 sudo apt install python3-tk
 ```
+
+## Installing matplotlib (for entropy plotting)
+
+To install matplotlib, run the following command:
+```bash
+python -m pip install -U matplotlib
+```
