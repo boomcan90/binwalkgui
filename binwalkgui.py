@@ -77,7 +77,7 @@ def magic():
 		results_string_offset = '' 
 		results_string_description = ''
 
-		for module in binwalk.scan(filename_path, signature=False, magic='magic.mgc',quiet=quiet_mode.get()):
+		for module in binwalk.scan(filename_path, signature=False, magic=magic_path,quiet=quiet_mode.get()):
 			for result in module.results: 
 				results_string_offset += "0x%.8X\n" % (result.offset)
 				results_string_description += "%s\n" % (result.description)
